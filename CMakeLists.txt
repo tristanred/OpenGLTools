@@ -22,6 +22,12 @@ ENDIF(WIN32)
 
 add_executable(GLTools ${SOURCES} ${SRC_GLAD})
 
+# Copy the LIBTECH dll to the output dir
+add_custom_command(
+    TARGET GLTools POST_BUILD 
+    COMMAND ${CMAKE_COMMAND} -E copy_if_different
+    "${PROJECT_SOURCE_DIR}/build/lib/libtech/$(Configuration)/LIBTECHD.dll"
+    $<TARGET_FILE_DIR:GLTools>)
 
 add_subdirectory("lib/libtech")
 include_directories("lib/libtech/include")
