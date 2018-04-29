@@ -6,6 +6,10 @@ set(CMAKE_CXX_STANDARD 11)
 file(GLOB SOURCES "src/*.cpp")
 file(GLOB HEADERS "src/*.h")
 
+
+file(GLOB SRC_GLAD "lib/glad/src/glad.c")
+include_directories("lib/glad/include")
+
 IF(WIN32)
     add_definitions("-D_WINDOWS")
     add_definitions("-D_UNICODE")
@@ -16,9 +20,15 @@ IF(WIN32)
 ENDIF(WIN32)
 
 
-add_executable(GLTools ${SOURCES})
+add_executable(GLTools ${SOURCES} ${SRC_GLAD})
 
 
 add_subdirectory("libtech")
 include_directories("libtech/include")
 target_link_libraries(GLTools LIBTECHD)
+
+add_subdirectory("lib/glfw-3.2.1")
+include_directories("lib/glfw-3.2.1/include")
+target_link_libraries(GLTools glfw)
+
+#set(CMAKE_EXE_LINKER_FLAGS "-lGL -lX11 -lpthread -lXrandr -lXi")
