@@ -1,0 +1,3 @@
+[submodule "libtech"]
+	path = libtech
+	url = https://github.com/tristanred/libtech.git
