@@ -27,8 +27,8 @@ add_subdirectory("libtech")
 include_directories("libtech/include")
 target_link_libraries(GLTools LIBTECHD)
 
-add_subdirectory("lib/glfw-3.2.1")
-include_directories("lib/glfw-3.2.1/include")
+add_subdirectory("lib/glfw")
+include_directories("lib/glfw/include")
 target_link_libraries(GLTools glfw)
 
 #set(CMAKE_EXE_LINKER_FLAGS "-lGL -lX11 -lpthread -lXrandr -lXi")
