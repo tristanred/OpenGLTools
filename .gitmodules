@@ -1,6 +1,6 @@
-[submodule "libtech"]
-	path = libtech
-	url = https://github.com/tristanred/libtech.git
 [submodule "lib/glfw"]
 	path = lib/glfw
 	url = https://github.com/glfw/glfw.git
+[submodule "lib/libtech"]
+	path = lib/libtech
+	url = https://github.com/tristanred/libtech.git

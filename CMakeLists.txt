@@ -23,8 +23,8 @@ ENDIF(WIN32)
 add_executable(GLTools ${SOURCES} ${SRC_GLAD})
 
 
-add_subdirectory("libtech")
-include_directories("libtech/include")
+add_subdirectory("lib/libtech")
+include_directories("lib/libtech/include")
 target_link_libraries(GLTools LIBTECHD)
 
 add_subdirectory("lib/glfw")
