@@ -84,7 +84,7 @@ int main(int argc, char** argv)
     // build and compile our shader program
     // ------------------------------------
     // vertex shader
-    int vertexShader = glCreateShader(GL_VERTEX_SHADER);
+    GLuint vertexShader = glCreateShader(GL_VERTEX_SHADER);
     glShaderSource(vertexShader, 1, &vertexShaderSource, NULL);
     glCompileShader(vertexShader);
     // check for shader compile errors
@@ -97,7 +97,7 @@ int main(int argc, char** argv)
         printf("ERROR::SHADER::VERTEX::COMPILATION_FAILED\n");
     }
     // fragment shader
-    int fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
+    GLuint fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
     glShaderSource(fragmentShader, 1, &fragmentShaderSource, NULL);
     glCompileShader(fragmentShader);
     // check for shader compile errors
@@ -108,7 +108,7 @@ int main(int argc, char** argv)
         printf("ERROR::SHADER::FRAGMENT::COMPILATION_FAILED\n");
     }
     // link shaders
-    int shaderProgram = glCreateProgram();
+    GLuint shaderProgram = glCreateProgram();
     glAttachShader(shaderProgram, vertexShader);
     glAttachShader(shaderProgram, fragmentShader);
     glLinkProgram(shaderProgram);
