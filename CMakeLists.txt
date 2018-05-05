@@ -39,6 +39,8 @@ target_link_libraries(GLTools LIBTECHD)
 IF(LIBTECH_SUPPORT_OPENGL)
     include_directories("lib/libtech/lib/glfw/include")
     target_link_libraries(GLTools glfw)
+
+    add_definitions(-DLIBTECH_BUILD_OPENGL)
 ELSE()
     add_subdirectory("lib/glfw")
     include_directories("lib/glfw/include")
