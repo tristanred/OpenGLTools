@@ -5,7 +5,8 @@
 
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
-
+#include <libtech/oglutilities.h>
+#include <stb_image.h>
 
 #define LIBTECH_LOADDLL
 
@@ -73,6 +74,9 @@ void framebuffer_size_callback(GLFWwindow* window, int width, int height)
 
 int main(int argc, char** argv)
 {
+    int width, height, nrChannels;
+    unsigned char *data = stbi_load("assets/test.png", &width, &height, &nrChannels, 0);
+
     double d = deg2rad(22);
 
     init_gl();
@@ -124,14 +128,23 @@ int main(int argc, char** argv)
     // set up vertex data (and buffer(s)) and configure vertex attributes
     // ------------------------------------------------------------------
     float vertices[] = {
-            0.5f,  0.5f, 0.0f,  // top right
-            0.5f, -0.5f, 0.0f,  // bottom right
-            -0.5f, -0.5f, 0.0f,  // bottom left
-            -0.5f,  0.5f, 0.0f   // top left
+            0.5f,  0.5f, 0.0f,  // 0. top right
+            0.5f, -0.5f, 0.0f,  // 1. bottom right
+            -0.5f, -0.5f, 0.0f, // 2. bottom left
+            -0.5f,  0.5f, 0.0f, // 3. top left
+            0.0f, 0.8f, 0.0f,   // 4. Top hat of the house
+            0.8f, 0.0f, 0.0f,   // 5. Right point
+            0.0, -0.8f, 0.0f,   // 6. Bottom point
+            -0.8f, 0.0f, 0.0f   // 7. Left point
     };
     unsigned int indices[] = {  // note that we start from 0!
             0, 1, 3,  // first Triangle
-            1, 2, 3   // second Triangle
+            1, 2, 3,  // second Triangle,
+            3, 4, 0,  // Top hat of the house
+            0, 1, 5,  // Right point
+            1, 2, 6,  // Bottom point
+            2, 3, 7   // Left point
+
     };
     unsigned int VBO, VAO, EBO;
     glGenVertexArrays(1, &VAO);
@@ -161,7 +174,7 @@ int main(int argc, char** argv)
 
 
     // uncomment this call to draw in wireframe polygons.
-    //glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+    glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
     // render loop
     // -----------
@@ -180,7 +193,7 @@ int main(int argc, char** argv)
         glUseProgram(shaderProgram);
         glBindVertexArray(VAO); // seeing as we only have a single VAO there's no need to bind it every time, but we'll do so to keep things a bit more organized
         //glDrawArrays(GL_TRIANGLES, 0, 6);
-        glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+        glDrawElements(GL_TRIANGLES, 18, GL_UNSIGNED_INT, 0);
         // glBindVertexArray(0); // no need to unbind it every time
 
         // glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)

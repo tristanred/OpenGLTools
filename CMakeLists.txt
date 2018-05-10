@@ -15,9 +15,13 @@ file(GLOB HEADERS "src/*.h")
 IF(LIBTECH_SUPPORT_OPENGL)
     file(GLOB SRC_GLAD "lib/libtech/lib/glad/src/glad.c")
     include_directories("lib/libtech/lib/glad/include")
+    include_directories("lib/stb")
+    file(GLOB SRC_STB "lib/stb/*.cpp")
 ELSE()
     file(GLOB SRC_GLAD "lib/glad/src/glad.c")
     include_directories("lib/glad/include")
+    include_directories("lib/stb")
+    file(GLOB SRC_STB "lib/stb/*.cpp")
 ENDIF(LIBTECH_SUPPORT_OPENGL)
 
 
@@ -31,7 +35,7 @@ IF(WIN32)
 ENDIF(WIN32)
 
 # Declare the output executable
-add_executable(GLTools ${SOURCES} ${SRC_GLAD})
+add_executable(GLTools ${SOURCES} ${SRC_GLAD} ${SRC_STB})
 
 # Link Libtech to the main project
 target_link_libraries(GLTools LIBTECHD)
@@ -56,5 +60,6 @@ IF(WIN32)
         $<TARGET_FILE_DIR:GLTools>)
 ENDIF(WIN32)
 
+file(COPY assets DESTINATION ${PROJECT_BINARY_DIR})
 
 #set(CMAKE_EXE_LINKER_FLAGS "-lGL -lX11 -lpthread -lXrandr -lXi")
