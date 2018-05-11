@@ -11,18 +11,25 @@
 #define LIBTECH_LOADDLL
 
 
-const char *vertexShaderSource = "#version 330 core\n"
+const char *vertexShaderSource = ""
+"#version 330 core\n"
 "layout (location = 0) in vec3 aPos;\n"
+"layout (location = 1) in vec2 aTexCoord;\n"
+"out vec2 TexCoord;"
 "void main()\n"
 "{\n"
 "   gl_Position = vec4(aPos.x, aPos.y, aPos.z, 1.0);\n"
+"   TexCoord = aTexCoord;\n"
 "}\0";
 
-const char *fragmentShaderSource = "#version 330 core\n"
+const char *fragmentShaderSource = ""
+"#version 330 core\n"
 "out vec4 FragColor;\n"
+"in vec2 TexCoord;\n"
+"uniform sampler2D ourTexture;\n"
 "void main()\n"
 "{\n"
-"   FragColor = vec4(1.0f, 0.5f, 0.2f, 1.0f);\n"
+"   FragColor = texture(ourTexture, TexCoord);\n"
 "}\n\0";
 
 void init_gl()
@@ -74,8 +81,6 @@ void framebuffer_size_callback(GLFWwindow* window, int width, int height)
 
 int main(int argc, char** argv)
 {
-    int width, height, nrChannels;
-    unsigned char *data = stbi_load("assets/test.png", &width, &height, &nrChannels, 0);
 
     double d = deg2rad(22);
 
@@ -128,14 +133,14 @@ int main(int argc, char** argv)
     // set up vertex data (and buffer(s)) and configure vertex attributes
     // ------------------------------------------------------------------
     float vertices[] = {
-            0.5f,  0.5f, 0.0f,  // 0. top right
-            0.5f, -0.5f, 0.0f,  // 1. bottom right
-            -0.5f, -0.5f, 0.0f, // 2. bottom left
-            -0.5f,  0.5f, 0.0f, // 3. top left
-            0.0f, 0.8f, 0.0f,   // 4. Top hat of the house
-            0.8f, 0.0f, 0.0f,   // 5. Right point
-            0.0, -0.8f, 0.0f,   // 6. Bottom point
-            -0.8f, 0.0f, 0.0f   // 7. Left point
+             0.5f,  0.5f, 0.0f,  0.5f,  0.5f,  // 0. top right
+             0.5f, -0.5f, 0.0f,  0.5f, -0.5f,  // 1. bottom right
+             -0.5f, -0.5f, 0.0f, -0.5f, -0.5f, // 2. bottom left
+             -0.5f,  0.5f, 0.0f, -0.5f,  0.5f, // 3. top left
+             0.0f,  0.8f, 0.0f,  0.0f,  0.8f,   // 4. Top hat of the house
+             0.8f,  0.0f, 0.0f,  0.8f,  0.0f,   // 5. Right point
+             0.0f, -0.8f, 0.0f,  0.0f, -0.8f,   // 6. Bottom point
+             -0.8f,  0.0f, 0.0f, -0.8f,  0.0f,   // 7. Left point
     };
     unsigned int indices[] = {  // note that we start from 0!
             0, 1, 3,  // first Triangle
@@ -159,8 +164,12 @@ int main(int argc, char** argv)
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
 
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)0);
     glEnableVertexAttribArray(0);
+    // Texture
+    glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
+    glEnableVertexAttribArray(1);
+
 
     // note that this is allowed, the call to glVertexAttribPointer registered VBO as the vertex attribute's bound vertex buffer object so afterwards we can safely unbind
     glBindBuffer(GL_ARRAY_BUFFER, 0);
@@ -174,7 +183,23 @@ int main(int argc, char** argv)
 
 
     // uncomment this call to draw in wireframe polygons.
-    glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+    //glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+
+    int width, height, nrChannels;
+    unsigned char *data = stbi_load("assets/test.png", &width, &height, &nrChannels, 0);
+
+    GLuint tex;
+    glGenTextures(1, &tex);
+    glBindTexture(GL_TEXTURE_2D, tex);
+    
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
+    glGenerateMipmap(GL_TEXTURE_2D);
+
 
     // render loop
     // -----------
@@ -201,6 +226,8 @@ int main(int argc, char** argv)
         glfwSwapBuffers(window);
         glfwPollEvents();
     }
+
+    stbi_image_free(data);
 
     // optional: de-allocate all resources once they've outlived their purpose:
     // ------------------------------------------------------------------------
