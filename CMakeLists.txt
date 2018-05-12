@@ -15,13 +15,19 @@ file(GLOB HEADERS "src/*.h")
 IF(LIBTECH_SUPPORT_OPENGL)
     file(GLOB SRC_GLAD "lib/libtech/lib/glad/src/glad.c")
     include_directories("lib/libtech/lib/glad/include")
+    
+    # Included locally for now
     include_directories("lib/stb")
     file(GLOB SRC_STB "lib/stb/*.cpp")
+    include_directories("lib/glm")
 ELSE()
     file(GLOB SRC_GLAD "lib/glad/src/glad.c")
     include_directories("lib/glad/include")
+    
     include_directories("lib/stb")
     file(GLOB SRC_STB "lib/stb/*.cpp")
+    
+    include_directories("lib/glm")
 ENDIF(LIBTECH_SUPPORT_OPENGL)
 
 
